@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
+  <classes name="LiberaBrillianceGdx" pogoRevision="8.4">
+    <description description="Libera GDX Device Server&#xA;The interface should be the same as for the Brillance model." title="Libera GDX Device Server" sourcePath="/Users/vasmar/Documents/workspace/LiberaGdx/src" language="Cpp" filestogenerate="XMI   file,Code files" license="GPL" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+      <inheritances classname="Device_4Impl" sourcePath=""/>
+      <identification contact="at maxlab.lu.se - kitscontrols" author="kitscontrols" emailDomain="maxlab.lu.se" classFamily="BeamDiag" siteSpecific="" platform="Unix Like" bus="Ethernet" manufacturer="I-Tech" reference="Libera Brilliance Plus"/>
+    </description>
+    <classProperties name="Institute" description="0: TANGO_INSTITUTE (GENERIC)&#xA;1: ALBA&#xA;2: ESRF&#xA;3: ELETTRA&#xA;4: SOLEIL">
+      <type xsi:type="pogoDsl:ShortType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>0</DefaultPropValue>
+    </classProperties>
+    <deviceProperties name="LiberaIpAddr" description="The Libera IP address [no default value]">
+      <type xsi:type="pogoDsl:StringType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>127.0.0.1</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="LiberaPort" description="The port on which the generic server handles external requests. Defaults to 23721.">
+      <type xsi:type="pogoDsl:ShortType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>23271</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="ErrorTrace" description="Trace Error functionality for the Libera, by default is Disabled:&#xA; * Value: OutPut ,  TraceLevel&#xA;&#x9;* Output[0] :  OutPut on Screen = 0&#xA;&#x9;                         OutPut on File = 0 (&#xfeff;/var/tmp/ds.log/LiberaMciTrace.log)&#xA;&#x9;* TraceLevel[1] : &#xfeff;   Off     = 0,&#xA;        &#x9;&#x9;      Low     = 1,&#xA;&#x9;&#x9;      Med     = 2,&#xA;&#x9;&#x9;      High    = 3,&#xA;&#x9;&#x9;      Detail  = 4">
+      <type xsi:type="pogoDsl:ShortVectorType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </deviceProperties>
+    <commands name="State" description="This command gets the device state (stored in its &lt;i>device_state&lt;/i> data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="none.">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="State Code">
+        <type xsi:type="pogoDsl:StateType"/>
+      </argout>
+      <status abstract="true" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="Status" description="This command gets the device status (stored in its &lt;i>device_status&lt;/i> data member) and returns it to the caller." execMethod="dev_status" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="none.">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="Status description">
+        <type xsi:type="pogoDsl:ConstStringType"/>
+      </argout>
+      <status abstract="true" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="GetParameters" description="Retruns the current gains and offsets (i.e. the parameters used for position computation)" execMethod="get_parameters" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="N/A">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="The BPM gain and offsets">
+        <type xsi:type="pogoDsl:DoubleStringArrayType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>UNKNOWN</excludedStates>
+      <excludedStates>FAULT</excludedStates>
+    </commands>
+    <commands name="ReloadSystemProperties" description="" execMethod="reload_system_properties" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="n/a">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="n/a">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>UNKNOWN</excludedStates>
+      <excludedStates>FAULT</excludedStates>
+    </commands>
+    <commands name="MagicCommand" description="Directly dump the Libera ireg node structure. If the input argument is a sub tree all subnodes will be dumped out." execMethod="magic_command" displayLevel="EXPERT" polledPeriod="0">
+      <argin description="absolute path of the node name">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="value of specified node(s)">
+        <type xsi:type="pogoDsl:StringArrayType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ForceInitSettings" description="Initializing Libera Default Settings (Based to the properties) without performing init_device" execMethod="force_init_settings" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="n/a">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="n/a">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>UNKNOWN</excludedStates>
+      <excludedStates>FAULT</excludedStates>
+    </commands>
+    <commands name="SetTraceLevel" description="Sets the Trace Error Level:  &#x9;Off     = 0,&#xA;        &#x9;&#x9;Low     = 1,&#xA;&#x9;&#x9;Med     = 2,&#xA;&#x9;&#x9;High    = 3,&#xA;&#x9;&#x9;Detail  = 4" execMethod="set_trace_level" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:UShortType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>UNKNOWN</excludedStates>
+      <excludedStates>FAULT</excludedStates>
+    </commands>
+    <attributes name="FOFBInterlockStatus" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="0" maxY="0" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:BooleanType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="FOFB Interlock Status" label="Interlock Status" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <attributes name="FOFBDimBpms" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:IntType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="fofb.dim.bpms" label="Dim Bpms" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <attributes name="FOFBDimEigenModes" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:IntType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="fofb.dim.eigenmodes" label="Dim eigenmodes" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <attributes name="GbeOrbitEnable" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="0" maxX="0" maxY="0" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:BooleanType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="Gbe Orbit Status" label="Gbe Orbit" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <attributes name="UserData" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="256" maxY="0">
+      <dataType xsi:type="pogoDsl:ShortType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="User defined data" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <attributes name="logs" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="2048" maxY="0">
+      <dataType xsi:type="pogoDsl:StringType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
+    <states name="UNKNOWN" description="Device is not [or not properly] initialized">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="FAULT" description="Device initialization failed or unrecoverable error">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="ON" description="BPM is up and running">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <preferences docHome="./doc_html" makefileHome="$(TANGO_HOME)"/>
+  </classes>
+</pogoDsl:PogoSystem>
