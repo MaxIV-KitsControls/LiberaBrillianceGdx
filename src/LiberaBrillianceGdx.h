@@ -70,6 +70,7 @@ class LiberaBrillianceGdx : public TANGO_BASE_CLASS
     void init_settings();
     void LogStatusGuard(std::string status);               // Give the status to Tango.
 
+    std::string module;
     Tango::DevState m_state;
     std::string m_status;
     std::string current_status;
@@ -80,8 +81,6 @@ class LiberaBrillianceGdx : public TANGO_BASE_CLASS
 public:
 	//	LiberaIpAddr:	The Libera IP address [no default value]
 	string	liberaIpAddr;
-	//	LiberaPort:	The port on which the generic server handles external requests. Defaults to 23721.
-	Tango::DevShort	liberaPort;
 	//	ErrorTrace:	Trace Error functionality for the Libera, by default is Disabled:
 	//   * Value: OutPut ,  TraceLevel
 	//  	* Output[0] :  OutPut on Screen = 0
@@ -96,11 +95,13 @@ public:
 //	Attribute data members
 public:
 	Tango::DevBoolean	*attr_FOFBInterlockStatus_read;
-	Tango::DevLong	*attr_FOFBDimBpms_read;
-	Tango::DevLong	*attr_FOFBDimEigenModes_read;
 	Tango::DevBoolean	*attr_GbeOrbitEnable_read;
-	Tango::DevShort	*attr_UserData_read;
-	Tango::DevString	*attr_logs_read;
+	Tango::DevShort	*attr_FOFBStateMode_read;
+	Tango::DevShort	*attr_FOFBSwitch_read;
+	Tango::DevShort	*attr_FOFBAxis_read;
+	Tango::DevLong	*attr_FOFBDimBpms_read;
+	Tango::DevLong	*attr_FOFBDimEigenmodes_read;
+	Tango::DevLong	*attr_GbeOrbitStatus_read;
 
 //	Constructors and destructors
 public:
@@ -128,7 +129,7 @@ public:
 	LiberaBrillianceGdx(Tango::DeviceClass *cl,const char *s,const char *d);
 	/**
 	 * The device object destructor.
-	 */	
+	 */
 	~LiberaBrillianceGdx() {delete_device();};
 
 
@@ -172,6 +173,7 @@ public:
 /**
  *	Attribute FOFBInterlockStatus related methods
  *	Description: FOFB Interlock Status
+ *               node:boards.gdx1.fofb.interlock.status
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -179,28 +181,9 @@ public:
 	virtual void read_FOFBInterlockStatus(Tango::Attribute &attr);
 	virtual bool is_FOFBInterlockStatus_allowed(Tango::AttReqType type);
 /**
- *	Attribute FOFBDimBpms related methods
- *	Description: fofb.dim.bpms
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-	virtual void read_FOFBDimBpms(Tango::Attribute &attr);
-	virtual void write_FOFBDimBpms(Tango::WAttribute &attr);
-	virtual bool is_FOFBDimBpms_allowed(Tango::AttReqType type);
-/**
- *	Attribute FOFBDimEigenModes related methods
- *	Description: fofb.dim.eigenmodes
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-	virtual void read_FOFBDimEigenModes(Tango::Attribute &attr);
-	virtual void write_FOFBDimEigenModes(Tango::WAttribute &attr);
-	virtual bool is_FOFBDimEigenModes_allowed(Tango::AttReqType type);
-/**
  *	Attribute GbeOrbitEnable related methods
- *	Description: Gbe Orbit Status
+ *	Description: Gbe Orbit Enabled
+ *               node:boards.gdx1.gbe_orbit.enable
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -209,23 +192,69 @@ public:
 	virtual void write_GbeOrbitEnable(Tango::WAttribute &attr);
 	virtual bool is_GbeOrbitEnable_allowed(Tango::AttReqType type);
 /**
- *	Attribute UserData related methods
- *	Description: User defined data
+ *	Attribute FOFBStateMode related methods
+ *	Description: FOFB State Mode
+ *               node:boards.gdx1.fofb.state.mode
  *
  *	Data type:	Tango::DevShort
- *	Attr type:	Spectrum max = 256
+ *	Attr type:	Scalar
  */
-	virtual void read_UserData(Tango::Attribute &attr);
-	virtual bool is_UserData_allowed(Tango::AttReqType type);
+	virtual void read_FOFBStateMode(Tango::Attribute &attr);
+	virtual bool is_FOFBStateMode_allowed(Tango::AttReqType type);
 /**
- *	Attribute logs related methods
- *	Description: 
+ *	Attribute FOFBSwitch related methods
+ *	Description: FOFB Switch
+ *               node:boards.gdx1.fofb.switch
  *
- *	Data type:	Tango::DevString
- *	Attr type:	Spectrum max = 2048
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
  */
-	virtual void read_logs(Tango::Attribute &attr);
-	virtual bool is_logs_allowed(Tango::AttReqType type);
+	virtual void read_FOFBSwitch(Tango::Attribute &attr);
+	virtual void write_FOFBSwitch(Tango::WAttribute &attr);
+	virtual bool is_FOFBSwitch_allowed(Tango::AttReqType type);
+/**
+ *	Attribute FOFBAxis related methods
+ *	Description: FOFB Axis
+ *               node:boards.gdx1.fofb.axis
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+	virtual void read_FOFBAxis(Tango::Attribute &attr);
+	virtual void write_FOFBAxis(Tango::WAttribute &attr);
+	virtual bool is_FOFBAxis_allowed(Tango::AttReqType type);
+/**
+ *	Attribute FOFBDimBpms related methods
+ *	Description: FOFB Dim BPMS
+ *               node:boards.gdx1.dim.bpms
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+	virtual void read_FOFBDimBpms(Tango::Attribute &attr);
+	virtual void write_FOFBDimBpms(Tango::WAttribute &attr);
+	virtual bool is_FOFBDimBpms_allowed(Tango::AttReqType type);
+/**
+ *	Attribute FOFBDimEigenmodes related methods
+ *	Description: FOFB Dim Eigenmodes
+ *               node:boards.gdx1.fofb.dim.eigenmodes
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+	virtual void read_FOFBDimEigenmodes(Tango::Attribute &attr);
+	virtual void write_FOFBDimEigenmodes(Tango::WAttribute &attr);
+	virtual bool is_FOFBDimEigenmodes_allowed(Tango::AttReqType type);
+/**
+ *	Attribute GbeOrbitStatus related methods
+ *	Description: Gbe Orbit Status
+ *               node:boards.gdx1.gbe_orbit.status
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+	virtual void read_GbeOrbitStatus(Tango::Attribute &attr);
+	virtual bool is_GbeOrbitStatus_allowed(Tango::AttReqType type);
 
 
 	//--------------------------------------------------------
@@ -235,6 +264,7 @@ public:
 	 */
 	//--------------------------------------------------------
 	void add_dynamic_attributes();
+
 
 
 
@@ -297,6 +327,13 @@ public:
 	 */
 	virtual void set_trace_level(Tango::DevUShort argin);
 	virtual bool is_SetTraceLevel_allowed(const CORBA::Any &any);
+	/**
+	 *	Command ResetStatusInterlock related method
+	 *	Description: Command to reset FOFB interlock Status
+	 *
+	 */
+	virtual void reset_status_interlock();
+	virtual bool is_ResetStatusInterlock_allowed(const CORBA::Any &any);
 
 
 	//--------------------------------------------------------

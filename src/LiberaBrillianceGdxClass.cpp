@@ -132,8 +132,8 @@ LiberaBrillianceGdxClass *LiberaBrillianceGdxClass::init(const char *name)
 		catch (bad_alloc &)
 		{
 			throw;
-		}		
-	}		
+		}
+	}
 	return _instance;
 }
 
@@ -248,6 +248,24 @@ CORBA::Any *SetTraceLevelClass::execute(Tango::DeviceImpl *device, const CORBA::
 	Tango::DevUShort argin;
 	extract(in_any, argin);
 	((static_cast<LiberaBrillianceGdx *>(device))->set_trace_level(argin));
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		ResetStatusInterlockClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *ResetStatusInterlockClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "ResetStatusInterlockClass::execute(): arrived" << endl;
+	((static_cast<LiberaBrillianceGdx *>(device))->reset_status_interlock());
 	return new CORBA::Any();
 }
 
@@ -380,20 +398,6 @@ void LiberaBrillianceGdxClass::set_default_property()
 	prop_def  = "127.0.0.1";
 	vect_data.clear();
 	vect_data.push_back("127.0.0.1");
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-	prop_name = "LiberaPort";
-	prop_desc = "The port on which the generic server handles external requests. Defaults to 23721.";
-	prop_def  = "23271";
-	vect_data.clear();
-	vect_data.push_back("23271");
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -624,7 +628,7 @@ void LiberaBrillianceGdxClass::attribute_factory(vector<Tango::Attr *> &att_list
 	//	Attribute : FOFBInterlockStatus
 	FOFBInterlockStatusAttrib	*fofbinterlockstatus = new FOFBInterlockStatusAttrib();
 	Tango::UserDefaultAttrProp	fofbinterlockstatus_prop;
-	fofbinterlockstatus_prop.set_description("FOFB Interlock Status");
+	fofbinterlockstatus_prop.set_description("FOFB Interlock Status\nnode:boards.gdx1.fofb.interlock.status");
 	fofbinterlockstatus_prop.set_label("Interlock Status");
 	//	unit	not set for FOFBInterlockStatus
 	//	standard_unit	not set for FOFBInterlockStatus
@@ -645,59 +649,11 @@ void LiberaBrillianceGdxClass::attribute_factory(vector<Tango::Attr *> &att_list
 	//	Not Memorized
 	att_list.push_back(fofbinterlockstatus);
 
-	//	Attribute : FOFBDimBpms
-	FOFBDimBpmsAttrib	*fofbdimbpms = new FOFBDimBpmsAttrib();
-	Tango::UserDefaultAttrProp	fofbdimbpms_prop;
-	fofbdimbpms_prop.set_description("fofb.dim.bpms");
-	fofbdimbpms_prop.set_label("Dim Bpms");
-	//	unit	not set for FOFBDimBpms
-	//	standard_unit	not set for FOFBDimBpms
-	//	display_unit	not set for FOFBDimBpms
-	//	format	not set for FOFBDimBpms
-	//	max_value	not set for FOFBDimBpms
-	//	min_value	not set for FOFBDimBpms
-	//	max_alarm	not set for FOFBDimBpms
-	//	min_alarm	not set for FOFBDimBpms
-	//	max_warning	not set for FOFBDimBpms
-	//	min_warning	not set for FOFBDimBpms
-	//	delta_t	not set for FOFBDimBpms
-	//	delta_val	not set for FOFBDimBpms
-	
-	fofbdimbpms->set_default_properties(fofbdimbpms_prop);
-	//	Not Polled
-	fofbdimbpms->set_disp_level(Tango::OPERATOR);
-	//	Not Memorized
-	att_list.push_back(fofbdimbpms);
-
-	//	Attribute : FOFBDimEigenModes
-	FOFBDimEigenModesAttrib	*fofbdimeigenmodes = new FOFBDimEigenModesAttrib();
-	Tango::UserDefaultAttrProp	fofbdimeigenmodes_prop;
-	fofbdimeigenmodes_prop.set_description("fofb.dim.eigenmodes");
-	fofbdimeigenmodes_prop.set_label("Dim eigenmodes");
-	//	unit	not set for FOFBDimEigenModes
-	//	standard_unit	not set for FOFBDimEigenModes
-	//	display_unit	not set for FOFBDimEigenModes
-	//	format	not set for FOFBDimEigenModes
-	//	max_value	not set for FOFBDimEigenModes
-	//	min_value	not set for FOFBDimEigenModes
-	//	max_alarm	not set for FOFBDimEigenModes
-	//	min_alarm	not set for FOFBDimEigenModes
-	//	max_warning	not set for FOFBDimEigenModes
-	//	min_warning	not set for FOFBDimEigenModes
-	//	delta_t	not set for FOFBDimEigenModes
-	//	delta_val	not set for FOFBDimEigenModes
-	
-	fofbdimeigenmodes->set_default_properties(fofbdimeigenmodes_prop);
-	//	Not Polled
-	fofbdimeigenmodes->set_disp_level(Tango::OPERATOR);
-	//	Not Memorized
-	att_list.push_back(fofbdimeigenmodes);
-
 	//	Attribute : GbeOrbitEnable
 	GbeOrbitEnableAttrib	*gbeorbitenable = new GbeOrbitEnableAttrib();
 	Tango::UserDefaultAttrProp	gbeorbitenable_prop;
-	gbeorbitenable_prop.set_description("Gbe Orbit Status");
-	gbeorbitenable_prop.set_label("Gbe Orbit");
+	gbeorbitenable_prop.set_description("Gbe Orbit Enabled\nnode:boards.gdx1.gbe_orbit.enable");
+	gbeorbitenable_prop.set_label("Gbe Orbit Enabled");
 	//	unit	not set for GbeOrbitEnable
 	//	standard_unit	not set for GbeOrbitEnable
 	//	display_unit	not set for GbeOrbitEnable
@@ -717,53 +673,150 @@ void LiberaBrillianceGdxClass::attribute_factory(vector<Tango::Attr *> &att_list
 	//	Not Memorized
 	att_list.push_back(gbeorbitenable);
 
-	//	Attribute : UserData
-	UserDataAttrib	*userdata = new UserDataAttrib();
-	Tango::UserDefaultAttrProp	userdata_prop;
-	userdata_prop.set_description("User defined data");
-	//	label	not set for UserData
-	//	unit	not set for UserData
-	//	standard_unit	not set for UserData
-	//	display_unit	not set for UserData
-	//	format	not set for UserData
-	//	max_value	not set for UserData
-	//	min_value	not set for UserData
-	//	max_alarm	not set for UserData
-	//	min_alarm	not set for UserData
-	//	max_warning	not set for UserData
-	//	min_warning	not set for UserData
-	//	delta_t	not set for UserData
-	//	delta_val	not set for UserData
+	//	Attribute : FOFBStateMode
+	FOFBStateModeAttrib	*fofbstatemode = new FOFBStateModeAttrib();
+	Tango::UserDefaultAttrProp	fofbstatemode_prop;
+	fofbstatemode_prop.set_description("FOFB State Mode\nnode:boards.gdx1.fofb.state.mode");
+	fofbstatemode_prop.set_label("State Mode");
+	fofbstatemode_prop.set_unit("Enumeration (off,on,standby)");
+	//	standard_unit	not set for FOFBStateMode
+	//	display_unit	not set for FOFBStateMode
+	//	format	not set for FOFBStateMode
+	//	max_value	not set for FOFBStateMode
+	//	min_value	not set for FOFBStateMode
+	//	max_alarm	not set for FOFBStateMode
+	//	min_alarm	not set for FOFBStateMode
+	//	max_warning	not set for FOFBStateMode
+	//	min_warning	not set for FOFBStateMode
+	//	delta_t	not set for FOFBStateMode
+	//	delta_val	not set for FOFBStateMode
 	
-	userdata->set_default_properties(userdata_prop);
+	fofbstatemode->set_default_properties(fofbstatemode_prop);
 	//	Not Polled
-	userdata->set_disp_level(Tango::OPERATOR);
+	fofbstatemode->set_disp_level(Tango::OPERATOR);
 	//	Not Memorized
-	att_list.push_back(userdata);
+	att_list.push_back(fofbstatemode);
 
-	//	Attribute : logs
-	logsAttrib	*logs = new logsAttrib();
-	Tango::UserDefaultAttrProp	logs_prop;
-	//	description	not set for logs
-	//	label	not set for logs
-	//	unit	not set for logs
-	//	standard_unit	not set for logs
-	//	display_unit	not set for logs
-	//	format	not set for logs
-	//	max_value	not set for logs
-	//	min_value	not set for logs
-	//	max_alarm	not set for logs
-	//	min_alarm	not set for logs
-	//	max_warning	not set for logs
-	//	min_warning	not set for logs
-	//	delta_t	not set for logs
-	//	delta_val	not set for logs
+	//	Attribute : FOFBSwitch
+	FOFBSwitchAttrib	*fofbswitch = new FOFBSwitchAttrib();
+	Tango::UserDefaultAttrProp	fofbswitch_prop;
+	fofbswitch_prop.set_description("FOFB Switch\nnode:boards.gdx1.fofb.switch");
+	fofbswitch_prop.set_label("Switch");
+	fofbswitch_prop.set_unit("Enumeration (off,on,hw)");
+	//	standard_unit	not set for FOFBSwitch
+	//	display_unit	not set for FOFBSwitch
+	//	format	not set for FOFBSwitch
+	//	max_value	not set for FOFBSwitch
+	//	min_value	not set for FOFBSwitch
+	//	max_alarm	not set for FOFBSwitch
+	//	min_alarm	not set for FOFBSwitch
+	//	max_warning	not set for FOFBSwitch
+	//	min_warning	not set for FOFBSwitch
+	//	delta_t	not set for FOFBSwitch
+	//	delta_val	not set for FOFBSwitch
 	
-	logs->set_default_properties(logs_prop);
+	fofbswitch->set_default_properties(fofbswitch_prop);
 	//	Not Polled
-	logs->set_disp_level(Tango::OPERATOR);
+	fofbswitch->set_disp_level(Tango::OPERATOR);
 	//	Not Memorized
-	att_list.push_back(logs);
+	att_list.push_back(fofbswitch);
+
+	//	Attribute : FOFBAxis
+	FOFBAxisAttrib	*fofbaxis = new FOFBAxisAttrib();
+	Tango::UserDefaultAttrProp	fofbaxis_prop;
+	fofbaxis_prop.set_description("FOFB Axis\nnode:boards.gdx1.fofb.axis");
+	fofbaxis_prop.set_label("Axis");
+	fofbaxis_prop.set_unit("Enumeration (x,y)");
+	//	standard_unit	not set for FOFBAxis
+	//	display_unit	not set for FOFBAxis
+	//	format	not set for FOFBAxis
+	//	max_value	not set for FOFBAxis
+	//	min_value	not set for FOFBAxis
+	//	max_alarm	not set for FOFBAxis
+	//	min_alarm	not set for FOFBAxis
+	//	max_warning	not set for FOFBAxis
+	//	min_warning	not set for FOFBAxis
+	//	delta_t	not set for FOFBAxis
+	//	delta_val	not set for FOFBAxis
+	
+	fofbaxis->set_default_properties(fofbaxis_prop);
+	//	Not Polled
+	fofbaxis->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(fofbaxis);
+
+	//	Attribute : FOFBDimBpms
+	FOFBDimBpmsAttrib	*fofbdimbpms = new FOFBDimBpmsAttrib();
+	Tango::UserDefaultAttrProp	fofbdimbpms_prop;
+	fofbdimbpms_prop.set_description("FOFB Dim BPMS\nnode:boards.gdx1.dim.bpms");
+	fofbdimbpms_prop.set_label("Dim BPMS");
+	//	unit	not set for FOFBDimBpms
+	//	standard_unit	not set for FOFBDimBpms
+	//	display_unit	not set for FOFBDimBpms
+	//	format	not set for FOFBDimBpms
+	//	max_value	not set for FOFBDimBpms
+	//	min_value	not set for FOFBDimBpms
+	//	max_alarm	not set for FOFBDimBpms
+	//	min_alarm	not set for FOFBDimBpms
+	//	max_warning	not set for FOFBDimBpms
+	//	min_warning	not set for FOFBDimBpms
+	//	delta_t	not set for FOFBDimBpms
+	//	delta_val	not set for FOFBDimBpms
+	
+	fofbdimbpms->set_default_properties(fofbdimbpms_prop);
+	//	Not Polled
+	fofbdimbpms->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(fofbdimbpms);
+
+	//	Attribute : FOFBDimEigenmodes
+	FOFBDimEigenmodesAttrib	*fofbdimeigenmodes = new FOFBDimEigenmodesAttrib();
+	Tango::UserDefaultAttrProp	fofbdimeigenmodes_prop;
+	fofbdimeigenmodes_prop.set_description("FOFB Dim Eigenmodes\nnode:boards.gdx1.fofb.dim.eigenmodes");
+	fofbdimeigenmodes_prop.set_label("Dim Eigenmodes");
+	//	unit	not set for FOFBDimEigenmodes
+	//	standard_unit	not set for FOFBDimEigenmodes
+	//	display_unit	not set for FOFBDimEigenmodes
+	//	format	not set for FOFBDimEigenmodes
+	fofbdimeigenmodes_prop.set_max_value("88");
+	fofbdimeigenmodes_prop.set_min_value("0");
+	//	max_alarm	not set for FOFBDimEigenmodes
+	//	min_alarm	not set for FOFBDimEigenmodes
+	//	max_warning	not set for FOFBDimEigenmodes
+	//	min_warning	not set for FOFBDimEigenmodes
+	//	delta_t	not set for FOFBDimEigenmodes
+	//	delta_val	not set for FOFBDimEigenmodes
+	
+	fofbdimeigenmodes->set_default_properties(fofbdimeigenmodes_prop);
+	//	Not Polled
+	fofbdimeigenmodes->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(fofbdimeigenmodes);
+
+	//	Attribute : GbeOrbitStatus
+	GbeOrbitStatusAttrib	*gbeorbitstatus = new GbeOrbitStatusAttrib();
+	Tango::UserDefaultAttrProp	gbeorbitstatus_prop;
+	gbeorbitstatus_prop.set_description("Gbe Orbit Status\nnode:boards.gdx1.gbe_orbit.status");
+	gbeorbitstatus_prop.set_label("Gbe Status");
+	//	unit	not set for GbeOrbitStatus
+	//	standard_unit	not set for GbeOrbitStatus
+	//	display_unit	not set for GbeOrbitStatus
+	//	format	not set for GbeOrbitStatus
+	//	max_value	not set for GbeOrbitStatus
+	//	min_value	not set for GbeOrbitStatus
+	//	max_alarm	not set for GbeOrbitStatus
+	//	min_alarm	not set for GbeOrbitStatus
+	//	max_warning	not set for GbeOrbitStatus
+	//	min_warning	not set for GbeOrbitStatus
+	//	delta_t	not set for GbeOrbitStatus
+	//	delta_val	not set for GbeOrbitStatus
+	
+	gbeorbitstatus->set_default_properties(gbeorbitstatus_prop);
+	//	Not Polled
+	gbeorbitstatus->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(gbeorbitstatus);
+
 
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());
@@ -772,6 +825,26 @@ void LiberaBrillianceGdxClass::attribute_factory(vector<Tango::Attr *> &att_list
 	//	Add your own code
 	
 	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdxClass::attribute_factory_after
+}
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdxClass::pipe_factory()
+ *	Description : Create the pipe object(s)
+ *                and store them in the pipe list
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdxClass::pipe_factory()
+{
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdxClass::pipe_factory_before) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdxClass::pipe_factory_before
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdxClass::pipe_factory_after) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdxClass::pipe_factory_after
 }
 //--------------------------------------------------------
 /**
@@ -834,6 +907,15 @@ void LiberaBrillianceGdxClass::command_factory()
 			Tango::OPERATOR);
 	command_list.push_back(pSetTraceLevelCmd);
 
+	//	Command ResetStatusInterlock
+	ResetStatusInterlockClass	*pResetStatusInterlockCmd =
+		new ResetStatusInterlockClass("ResetStatusInterlock",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pResetStatusInterlockCmd);
+
 	/*----- PROTECTED REGION ID(LiberaBrillianceGdxClass::command_factory_after) ENABLED START -----*/
 	
 	//	Add your own code
@@ -850,7 +932,7 @@ void LiberaBrillianceGdxClass::command_factory()
  * method : 		LiberaBrillianceGdxClass::create_static_attribute_list
  * description : 	Create the a list of static attributes
  *
- * @param	att_list	the ceated attribute list 
+ * @param	att_list	the ceated attribute list
  */
 //--------------------------------------------------------
 void LiberaBrillianceGdxClass::create_static_attribute_list(vector<Tango::Attr *> &att_list)
@@ -884,10 +966,10 @@ void LiberaBrillianceGdxClass::erase_dynamic_attributes(const Tango::DevVarStrin
 	Tango::Util *tg = Tango::Util::instance();
 
 	for (unsigned long i=0 ; i<devlist_ptr->length() ; i++)
-	{	
+	{
 		Tango::DeviceImpl *dev_impl = tg->get_device_by_name(((string)(*devlist_ptr)[i]).c_str());
 		LiberaBrillianceGdx *dev = static_cast<LiberaBrillianceGdx *> (dev_impl);
-		
+
 		vector<Tango::Attribute *> &dev_att_list = dev->get_device_attr()->get_attribute_list();
 		vector<Tango::Attribute *>::iterator ite_att;
 		for (ite_att=dev_att_list.begin() ; ite_att != dev_att_list.end() ; ++ite_att)
@@ -919,7 +1001,7 @@ void LiberaBrillianceGdxClass::erase_dynamic_attributes(const Tango::DevVarStrin
 Tango::Attr *LiberaBrillianceGdxClass::get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname)
 {
 	vector<Tango::Attr *>::iterator it;
-	for (it=att_list.begin() ; it<att_list.end() ; it++)
+	for (it=att_list.begin() ; it<att_list.end() ; ++it)
 		if ((*it)->get_name()==attname)
 			return (*it);
 	//	Attr does not exist

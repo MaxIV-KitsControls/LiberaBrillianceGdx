@@ -72,36 +72,6 @@ public:
 		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBInterlockStatus_allowed(ty);}
 };
 
-//	Attribute FOFBDimBpms class definition
-class FOFBDimBpmsAttrib: public Tango::Attr
-{
-public:
-	FOFBDimBpmsAttrib():Attr("FOFBDimBpms",
-			Tango::DEV_LONG, Tango::READ_WRITE) {};
-	~FOFBDimBpmsAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBDimBpms(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBDimBpms(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBDimBpms_allowed(ty);}
-};
-
-//	Attribute FOFBDimEigenModes class definition
-class FOFBDimEigenModesAttrib: public Tango::Attr
-{
-public:
-	FOFBDimEigenModesAttrib():Attr("FOFBDimEigenModes",
-			Tango::DEV_LONG, Tango::READ_WRITE) {};
-	~FOFBDimEigenModesAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBDimEigenModes(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBDimEigenModes(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBDimEigenModes_allowed(ty);}
-};
-
 //	Attribute GbeOrbitEnable class definition
 class GbeOrbitEnableAttrib: public Tango::Attr
 {
@@ -117,30 +87,90 @@ public:
 		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_GbeOrbitEnable_allowed(ty);}
 };
 
-//	Attribute UserData class definition
-class UserDataAttrib: public Tango::SpectrumAttr
+//	Attribute FOFBStateMode class definition
+class FOFBStateModeAttrib: public Tango::Attr
 {
 public:
-	UserDataAttrib():SpectrumAttr("UserData",
-			Tango::DEV_SHORT, Tango::READ, 256) {};
-	~UserDataAttrib() {};
+	FOFBStateModeAttrib():Attr("FOFBStateMode",
+			Tango::DEV_SHORT, Tango::READ) {};
+	~FOFBStateModeAttrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->read_UserData(att);}
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBStateMode(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_UserData_allowed(ty);}
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBStateMode_allowed(ty);}
 };
 
-//	Attribute logs class definition
-class logsAttrib: public Tango::SpectrumAttr
+//	Attribute FOFBSwitch class definition
+class FOFBSwitchAttrib: public Tango::Attr
 {
 public:
-	logsAttrib():SpectrumAttr("logs",
-			Tango::DEV_STRING, Tango::READ, 2048) {};
-	~logsAttrib() {};
+	FOFBSwitchAttrib():Attr("FOFBSwitch",
+			Tango::DEV_SHORT, Tango::READ_WRITE) {};
+	~FOFBSwitchAttrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<LiberaBrillianceGdx *>(dev))->read_logs(att);}
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBSwitch(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBSwitch(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_logs_allowed(ty);}
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBSwitch_allowed(ty);}
+};
+
+//	Attribute FOFBAxis class definition
+class FOFBAxisAttrib: public Tango::Attr
+{
+public:
+	FOFBAxisAttrib():Attr("FOFBAxis",
+			Tango::DEV_SHORT, Tango::READ_WRITE) {};
+	~FOFBAxisAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBAxis(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBAxis(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBAxis_allowed(ty);}
+};
+
+//	Attribute FOFBDimBpms class definition
+class FOFBDimBpmsAttrib: public Tango::Attr
+{
+public:
+	FOFBDimBpmsAttrib():Attr("FOFBDimBpms",
+			Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~FOFBDimBpmsAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBDimBpms(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBDimBpms(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBDimBpms_allowed(ty);}
+};
+
+//	Attribute FOFBDimEigenmodes class definition
+class FOFBDimEigenmodesAttrib: public Tango::Attr
+{
+public:
+	FOFBDimEigenmodesAttrib():Attr("FOFBDimEigenmodes",
+			Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~FOFBDimEigenmodesAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_FOFBDimEigenmodes(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->write_FOFBDimEigenmodes(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_FOFBDimEigenmodes_allowed(ty);}
+};
+
+//	Attribute GbeOrbitStatus class definition
+class GbeOrbitStatusAttrib: public Tango::Attr
+{
+public:
+	GbeOrbitStatusAttrib():Attr("GbeOrbitStatus",
+			Tango::DEV_LONG, Tango::READ) {};
+	~GbeOrbitStatusAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<LiberaBrillianceGdx *>(dev))->read_GbeOrbitStatus(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<LiberaBrillianceGdx *>(dev))->is_GbeOrbitStatus_allowed(ty);}
 };
 
 
@@ -262,6 +292,29 @@ public:
 	{return (static_cast<LiberaBrillianceGdx *>(dev))->is_SetTraceLevel_allowed(any);}
 };
 
+//	Command ResetStatusInterlock class definition
+class ResetStatusInterlockClass : public Tango::Command
+{
+public:
+	ResetStatusInterlockClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	ResetStatusInterlockClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~ResetStatusInterlockClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<LiberaBrillianceGdx *>(dev))->is_ResetStatusInterlock_allowed(any);}
+};
+
 
 /**
  *	The LiberaBrillianceGdxClass singleton definition
@@ -305,6 +358,7 @@ class LiberaBrillianceGdxClass : public Tango::DeviceClass
 		static LiberaBrillianceGdxClass *_instance;
 		void command_factory();
 		void attribute_factory(vector<Tango::Attr *> &);
+		void pipe_factory();
 		void write_class_property();
 		void set_default_property();
 		void get_class_property();

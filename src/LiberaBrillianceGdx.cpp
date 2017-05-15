@@ -65,17 +65,20 @@ static const char *RcsId = "$Id:  $";
 //  MagicCommand            |  magic_command
 //  ForceInitSettings       |  force_init_settings
 //  SetTraceLevel           |  set_trace_level
+//  ResetStatusInterlock    |  reset_status_interlock
 //================================================================
 
 //================================================================
 //  Attributes managed are:
 //================================================================
 //  FOFBInterlockStatus  |  Tango::DevBoolean	Scalar
-//  FOFBDimBpms          |  Tango::DevLong	Scalar
-//  FOFBDimEigenModes    |  Tango::DevLong	Scalar
 //  GbeOrbitEnable       |  Tango::DevBoolean	Scalar
-//  UserData             |  Tango::DevShort	Spectrum  ( max = 256)
-//  logs                 |  Tango::DevString	Spectrum  ( max = 2048)
+//  FOFBStateMode        |  Tango::DevShort	Scalar
+//  FOFBSwitch           |  Tango::DevShort	Scalar
+//  FOFBAxis             |  Tango::DevShort	Scalar
+//  FOFBDimBpms          |  Tango::DevLong	Scalar
+//  FOFBDimEigenmodes    |  Tango::DevLong	Scalar
+//  GbeOrbitStatus       |  Tango::DevLong	Scalar
 //================================================================
 
 namespace LiberaBrillianceGdx_ns
@@ -189,8 +192,8 @@ void LiberaBrillianceGdx::init_device()
       INFO_STREAM << "Using 127.0.0.1 as ip address" << std::endl;
     }
 
-    //set timing board
-	std::string module("boards.gdx1.");
+    //set gdx1 board
+	module = "boards.gdx1.";
 
 	//	Initialize device
     m_libera = new LiberaClient(this, liberaIpAddr);
@@ -204,12 +207,30 @@ void LiberaBrillianceGdx::init_device()
     //m_libera->AddScalar("application.synchronize_lmt",
     //		attr_SynchronizeLMT_read, LiberaAttr::ULONGLONG2LONG, LiberaAttr::LONG2ULONGLONG);
 
+
     m_libera->AddScalar(module + "fofb.interlock.status", attr_FOFBInterlockStatus_read);
+    m_libera->AddScalar(module + "fofb.state.mode", attr_FOFBStateMode_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
+    m_libera->AddScalar(module + "fofb.switch", attr_FOFBSwitch_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
+    m_libera->AddScalar(module + "fofb.axis", attr_FOFBAxis_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
     m_libera->AddScalar(module + "fofb.dim.bpms", attr_FOFBDimBpms_read, LiberaAttr::ULONG2LONG, LiberaAttr::LONG2ULONG);
-    m_libera->AddScalar(module + "fofb.dim.eigenmodes", attr_FOFBDimEigenModes_read, LiberaAttr::ULONG2LONG, LiberaAttr::LONG2ULONG);
+    m_libera->AddScalar(module + "fofb.dim.eigenmodes", attr_FOFBDimEigenmodes_read, LiberaAttr::ULONG2LONG, LiberaAttr::LONG2ULONG);
+    m_libera->AddScalar(module + "gbe_orbit.enable", attr_GbeOrbitEnable_read);
+    m_libera->AddScalar(module + "gbe_orbit.status", attr_GbeOrbitStatus_read, LiberaAttr::ULONG2LONG);
+
+//	m_libera->AddScalar("", attr_FOFBInterlockStatus_read);
+//	m_libera->AddScalar("", attr_FOFBStateMode_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
+//	m_libera->AddScalar("", attr_FOFBSwitch_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
+//	m_libera->AddScalar("", attr_FOFBAxis_read, LiberaAttr::USHORT2SHORT, LiberaAttr::SHORT2USHORT);
+//	m_libera->AddScalar("", attr_FOFBDimBpms_read, LiberaAttr::ULONG2LONG, LiberaAttr::LONG2ULONG);
+//	m_libera->AddScalar("", attr_FOFBDimEigenmodes_read, LiberaAttr::ULONG2LONG, LiberaAttr::LONG2ULONG);
+//	m_libera->AddScalar("", attr_GbeOrbitEnable_read);
+//	m_libera->AddScalar("", attr_GbeOrbitStatus_read, LiberaAttr::ULONG2LONG);
+
+
     //m_libera->AddSpectrum(module + "fofb.dim.magnets", attr_FOFBDimMagnets_read);
     //m_libera->AddSpectrum(module + "fofb.dim.magnets", attr_FOFBDimMagnets_read, LiberaAttr::ULARR2LARR);
-    m_libera->AddScalar(module + "gbe_orbit.enable", attr_GbeOrbitEnable_read);
+    //m_libera->AddScalar(module + "gbe_orbit.enable", attr_GbeOrbitEnable_read);
+    //m_libera->AddScalar(module + "gbe_orbit.status", attr_GbeOrbitStatus_read, LiberaAttr::ULONG2LONG);
 
 
     }
@@ -261,7 +282,6 @@ void LiberaBrillianceGdx::get_device_property()
 	//	Read device properties from database.
 	Tango::DbData	dev_prop;
 	dev_prop.push_back(Tango::DbDatum("LiberaIpAddr"));
-	dev_prop.push_back(Tango::DbDatum("LiberaPort"));
 	dev_prop.push_back(Tango::DbDatum("ErrorTrace"));
 
 	//	is there at least one property to be read ?
@@ -287,17 +307,6 @@ void LiberaBrillianceGdx::get_device_property()
 		}
 		//	And try to extract LiberaIpAddr value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  liberaIpAddr;
-
-		//	Try to initialize LiberaPort from class property
-		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-		if (cl_prop.is_empty()==false)	cl_prop  >>  liberaPort;
-		else {
-			//	Try to initialize LiberaPort from default device value
-			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-			if (def_prop.is_empty()==false)	def_prop  >>  liberaPort;
-		}
-		//	And try to extract LiberaPort value from database
-		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  liberaPort;
 
 		//	Try to initialize ErrorTrace from class property
 		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -327,7 +336,7 @@ void LiberaBrillianceGdx::get_device_property()
 //--------------------------------------------------------
 void LiberaBrillianceGdx::always_executed_hook()
 {
-	INFO_STREAM << "LiberaBrillianceGdx::always_executed_hook()  " << device_name << endl;
+	DEBUG_STREAM << "LiberaBrillianceGdx::always_executed_hook()  " << device_name << endl;
 	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::always_executed_hook) ENABLED START -----*/
 
 
@@ -369,6 +378,7 @@ void LiberaBrillianceGdx::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_li
 /**
  *	Read attribute FOFBInterlockStatus related method
  *	Description: FOFB Interlock Status
+ *               node:boards.gdx1.fofb.interlock.status
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -385,84 +395,9 @@ void LiberaBrillianceGdx::read_FOFBInterlockStatus(Tango::Attribute &attr)
 }
 //--------------------------------------------------------
 /**
- *	Read attribute FOFBDimBpms related method
- *	Description: fofb.dim.bpms
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-//--------------------------------------------------------
-void LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBDimBpms) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_FOFBDimBpms_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBDimBpms
-}
-//--------------------------------------------------------
-/**
- *	Write attribute FOFBDimBpms related method
- *	Description: fofb.dim.bpms
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-//--------------------------------------------------------
-void LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevLong	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBDimBpms) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBDimBpms
-}
-//--------------------------------------------------------
-/**
- *	Read attribute FOFBDimEigenModes related method
- *	Description: fofb.dim.eigenmodes
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-//--------------------------------------------------------
-void LiberaBrillianceGdx::read_FOFBDimEigenModes(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimEigenModes(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBDimEigenModes) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_FOFBDimEigenModes_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBDimEigenModes
-}
-//--------------------------------------------------------
-/**
- *	Write attribute FOFBDimEigenModes related method
- *	Description: fofb.dim.eigenmodes
- *
- *	Data type:	Tango::DevLong
- *	Attr type:	Scalar
- */
-//--------------------------------------------------------
-void LiberaBrillianceGdx::write_FOFBDimEigenModes(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimEigenModes(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevLong	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBDimEigenModes) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBDimEigenModes
-}
-//--------------------------------------------------------
-/**
  *	Read attribute GbeOrbitEnable related method
- *	Description: Gbe Orbit Status
+ *	Description: Gbe Orbit Enabled
+ *               node:boards.gdx1.gbe_orbit.enable
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -480,7 +415,8 @@ void LiberaBrillianceGdx::read_GbeOrbitEnable(Tango::Attribute &attr)
 //--------------------------------------------------------
 /**
  *	Write attribute GbeOrbitEnable related method
- *	Description: Gbe Orbit Status
+ *	Description: Gbe Orbit Enabled
+ *               node:boards.gdx1.gbe_orbit.enable
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -494,44 +430,208 @@ void LiberaBrillianceGdx::write_GbeOrbitEnable(Tango::WAttribute &attr)
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_GbeOrbitEnable) ENABLED START -----*/
 	
-	
+	m_libera->UpdateScalar(attr_GbeOrbitEnable_read, w_val);
+
 	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_GbeOrbitEnable
 }
 //--------------------------------------------------------
 /**
- *	Read attribute UserData related method
- *	Description: User defined data
+ *	Read attribute FOFBStateMode related method
+ *	Description: FOFB State Mode
+ *               node:boards.gdx1.fofb.state.mode
  *
  *	Data type:	Tango::DevShort
- *	Attr type:	Spectrum max = 256
+ *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void LiberaBrillianceGdx::read_UserData(Tango::Attribute &attr)
+void LiberaBrillianceGdx::read_FOFBStateMode(Tango::Attribute &attr)
 {
-	DEBUG_STREAM << "LiberaBrillianceGdx::read_UserData(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_UserData) ENABLED START -----*/
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBStateMode(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBStateMode) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_UserData_read, 256);
+	attr.set_value(attr_FOFBStateMode_read);
 	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_UserData
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBStateMode
 }
 //--------------------------------------------------------
 /**
- *	Read attribute logs related method
- *	Description: 
+ *	Read attribute FOFBSwitch related method
+ *	Description: FOFB Switch
+ *               node:boards.gdx1.fofb.switch
  *
- *	Data type:	Tango::DevString
- *	Attr type:	Spectrum max = 2048
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void LiberaBrillianceGdx::read_logs(Tango::Attribute &attr)
+void LiberaBrillianceGdx::read_FOFBSwitch(Tango::Attribute &attr)
 {
-	DEBUG_STREAM << "LiberaBrillianceGdx::read_logs(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_logs) ENABLED START -----*/
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBSwitch(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBSwitch) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_logs_read, 2048);
+	attr.set_value(attr_FOFBSwitch_read);
 	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_logs
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBSwitch
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FOFBSwitch related method
+ *	Description: FOFB Switch
+ *               node:boards.gdx1.fofb.switch
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::write_FOFBSwitch(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBSwitch(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevShort	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBSwitch) ENABLED START -----*/
+	m_libera->UpdateScalar(attr_FOFBSwitch_read, w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBSwitch
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FOFBAxis related method
+ *	Description: FOFB Axis
+ *               node:boards.gdx1.fofb.axis
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::read_FOFBAxis(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBAxis(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBAxis) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_FOFBAxis_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBAxis
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FOFBAxis related method
+ *	Description: FOFB Axis
+ *               node:boards.gdx1.fofb.axis
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::write_FOFBAxis(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBAxis(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevShort	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBAxis) ENABLED START -----*/
+	m_libera->UpdateScalar(attr_FOFBAxis_read, w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBAxis
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FOFBDimBpms related method
+ *	Description: FOFB Dim BPMS
+ *               node:boards.gdx1.dim.bpms
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBDimBpms) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_FOFBDimBpms_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBDimBpms
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FOFBDimBpms related method
+ *	Description: FOFB Dim BPMS
+ *               node:boards.gdx1.dim.bpms
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevLong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBDimBpms) ENABLED START -----*/
+	m_libera->UpdateScalar(attr_FOFBDimBpms_read, w_val);
+
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBDimBpms
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FOFBDimEigenmodes related method
+ *	Description: FOFB Dim Eigenmodes
+ *               node:boards.gdx1.fofb.dim.eigenmodes
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::read_FOFBDimEigenmodes(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimEigenmodes(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_FOFBDimEigenmodes) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_FOFBDimEigenmodes_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_FOFBDimEigenmodes
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FOFBDimEigenmodes related method
+ *	Description: FOFB Dim Eigenmodes
+ *               node:boards.gdx1.fofb.dim.eigenmodes
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::write_FOFBDimEigenmodes(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimEigenmodes(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevLong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::write_FOFBDimEigenmodes) ENABLED START -----*/
+	m_libera->UpdateScalar(attr_FOFBDimEigenmodes_read, w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::write_FOFBDimEigenmodes
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute GbeOrbitStatus related method
+ *	Description: Gbe Orbit Status
+ *               node:boards.gdx1.gbe_orbit.status
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::read_GbeOrbitStatus(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::read_GbeOrbitStatus(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::read_GbeOrbitStatus) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_GbeOrbitStatus_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::read_GbeOrbitStatus
 }
 
 //--------------------------------------------------------
@@ -727,6 +827,38 @@ void LiberaBrillianceGdx::set_trace_level(Tango::DevUShort argin)
 	istd::TraceSetLevel(static_cast<istd::TraceLevel_e>(argin));
 	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::set_trace_level
 }
+//--------------------------------------------------------
+/**
+ *	Command ResetStatusInterlock related method
+ *	Description: Command to reset FOFB interlock Status
+ *
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::reset_status_interlock()
+{
+	DEBUG_STREAM << "LiberaBrillianceGdx::ResetStatusInterlock()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::reset_status_interlock) ENABLED START -----*/
+	
+	//	Add your own code
+	m_libera->Execute(module + "fofb.interlock.status.reset");
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::reset_status_interlock
+}
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::add_dynamic_commands()
+ *	Description : Create the dynamic commands if any
+ *                for specified device.
+ */
+//--------------------------------------------------------
+void LiberaBrillianceGdx::add_dynamic_commands()
+{
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::add_dynamic_commands) ENABLED START -----*/
+	
+	//	Add your own code to create and add dynamic commands if any
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::add_dynamic_commands
+}
 
 /*----- PROTECTED REGION ID(LiberaBrillianceGdx::namespace_ending) ENABLED START -----*/
 
@@ -826,6 +958,112 @@ void LiberaBrillianceGdx::init_settings()
 // 	int	w_length = attr.get_write_value_length();
 // 	//	Retrieve pointer on write values (Do not delete !)
 // 	const Tango::DevLong	*w_val;
+// 	attr.get_write_value(w_val);
+// 	
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Read attribute logs related method
+//  *	Description: 
+//  *
+//  *	Data type:	Tango::DevString
+//  *	Attr type:	Spectrum max = 2048
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::read_logs(Tango::Attribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::read_logs(Tango::Attribute &attr) entering... " << endl;
+// 	//	Set the attribute value
+// 	attr.set_value(attr_logs_read, 2048);
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Read attribute UserData related method
+//  *	Description: User defined data
+//  *
+//  *	Data type:	Tango::DevShort
+//  *	Attr type:	Spectrum max = 256
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::read_UserData(Tango::Attribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::read_UserData(Tango::Attribute &attr) entering... " << endl;
+// 	//	Set the attribute value
+// 	attr.set_value(attr_UserData_read, 256);
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Read attribute FOFBDimBpms related method
+//  *	Description: fofb.dim.bpms
+//  *
+//  *	Data type:	Tango::DevLong
+//  *	Attr type:	Scalar
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimBpms(Tango::Attribute &attr) entering... " << endl;
+// 	//	Set the attribute value
+// 	attr.set_value(attr_FOFBDimBpms_read);
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Write attribute FOFBDimBpms related method
+//  *	Description: fofb.dim.bpms
+//  *
+//  *	Data type:	Tango::DevLong
+//  *	Attr type:	Scalar
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimBpms(Tango::WAttribute &attr) entering... " << endl;
+// 	//	Retrieve write value
+// 	Tango::DevLong	w_val;
+// 	attr.get_write_value(w_val);
+// 	
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Read attribute FOFBDimEigenModes related method
+//  *	Description: fofb.dim.eigenmodes
+//  *
+//  *	Data type:	Tango::DevLong
+//  *	Attr type:	Scalar
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::read_FOFBDimEigenModes(Tango::Attribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::read_FOFBDimEigenModes(Tango::Attribute &attr) entering... " << endl;
+// 	//	Set the attribute value
+// 	attr.set_value(attr_FOFBDimEigenModes_read);
+// 	
+// }
+
+// //--------------------------------------------------------
+// /**
+//  *	Write attribute FOFBDimEigenModes related method
+//  *	Description: fofb.dim.eigenmodes
+//  *
+//  *	Data type:	Tango::DevLong
+//  *	Attr type:	Scalar
+//  */
+// //--------------------------------------------------------
+// void LiberaBrillianceGdx::write_FOFBDimEigenModes(Tango::WAttribute &attr)
+// {
+// 	DEBUG_STREAM << "LiberaBrillianceGdx::write_FOFBDimEigenModes(Tango::WAttribute &attr) entering... " << endl;
+// 	//	Retrieve write value
+// 	Tango::DevLong	w_val;
 // 	attr.get_write_value(w_val);
 // 	
 // 	

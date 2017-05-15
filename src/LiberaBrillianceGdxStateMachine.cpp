@@ -71,46 +71,6 @@ bool LiberaBrillianceGdx::is_FOFBInterlockStatus_allowed(TANGO_UNUSED(Tango::Att
 
 //--------------------------------------------------------
 /**
- *	Method      : LiberaBrillianceGdx::is_FOFBDimBpms_allowed()
- *	Description : Execution allowed for FOFBDimBpms attribute
- */
-//--------------------------------------------------------
-bool LiberaBrillianceGdx::is_FOFBDimBpms_allowed(TANGO_UNUSED(Tango::AttReqType type))
-{
-	//	Not any excluded states for FOFBDimBpms attribute in Write access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_WRITE) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_WRITE
-
-	//	Not any excluded states for FOFBDimBpms attribute in read access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_READ) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_READ
-	return true;
-}
-
-//--------------------------------------------------------
-/**
- *	Method      : LiberaBrillianceGdx::is_FOFBDimEigenModes_allowed()
- *	Description : Execution allowed for FOFBDimEigenModes attribute
- */
-//--------------------------------------------------------
-bool LiberaBrillianceGdx::is_FOFBDimEigenModes_allowed(TANGO_UNUSED(Tango::AttReqType type))
-{
-	//	Not any excluded states for FOFBDimEigenModes attribute in Write access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimEigenModesStateAllowed_WRITE) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimEigenModesStateAllowed_WRITE
-
-	//	Not any excluded states for FOFBDimEigenModes attribute in read access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimEigenModesStateAllowed_READ) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimEigenModesStateAllowed_READ
-	return true;
-}
-
-//--------------------------------------------------------
-/**
  *	Method      : LiberaBrillianceGdx::is_GbeOrbitEnable_allowed()
  *	Description : Execution allowed for GbeOrbitEnable attribute
  */
@@ -131,35 +91,116 @@ bool LiberaBrillianceGdx::is_GbeOrbitEnable_allowed(TANGO_UNUSED(Tango::AttReqTy
 
 //--------------------------------------------------------
 /**
- *	Method      : LiberaBrillianceGdx::is_UserData_allowed()
- *	Description : Execution allowed for UserData attribute
+ *	Method      : LiberaBrillianceGdx::is_FOFBStateMode_allowed()
+ *	Description : Execution allowed for FOFBStateMode attribute
  */
 //--------------------------------------------------------
-bool LiberaBrillianceGdx::is_UserData_allowed(TANGO_UNUSED(Tango::AttReqType type))
+bool LiberaBrillianceGdx::is_FOFBStateMode_allowed(TANGO_UNUSED(Tango::AttReqType type))
 {
 
-	//	Not any excluded states for UserData attribute in read access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::UserDataStateAllowed_READ) ENABLED START -----*/
+	//	Not any excluded states for FOFBStateMode attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBStateModeStateAllowed_READ) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::UserDataStateAllowed_READ
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBStateModeStateAllowed_READ
 	return true;
 }
 
 //--------------------------------------------------------
 /**
- *	Method      : LiberaBrillianceGdx::is_logs_allowed()
- *	Description : Execution allowed for logs attribute
+ *	Method      : LiberaBrillianceGdx::is_FOFBSwitch_allowed()
+ *	Description : Execution allowed for FOFBSwitch attribute
  */
 //--------------------------------------------------------
-bool LiberaBrillianceGdx::is_logs_allowed(TANGO_UNUSED(Tango::AttReqType type))
+bool LiberaBrillianceGdx::is_FOFBSwitch_allowed(TANGO_UNUSED(Tango::AttReqType type))
 {
-
-	//	Not any excluded states for logs attribute in read access.
-	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::logsStateAllowed_READ) ENABLED START -----*/
+	//	Not any excluded states for FOFBSwitch attribute in Write access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBSwitchStateAllowed_WRITE) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::logsStateAllowed_READ
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBSwitchStateAllowed_WRITE
+
+	//	Not any excluded states for FOFBSwitch attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBSwitchStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBSwitchStateAllowed_READ
 	return true;
 }
+
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::is_FOFBAxis_allowed()
+ *	Description : Execution allowed for FOFBAxis attribute
+ */
+//--------------------------------------------------------
+bool LiberaBrillianceGdx::is_FOFBAxis_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for FOFBAxis attribute in Write access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBAxisStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBAxisStateAllowed_WRITE
+
+	//	Not any excluded states for FOFBAxis attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBAxisStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBAxisStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::is_FOFBDimBpms_allowed()
+ *	Description : Execution allowed for FOFBDimBpms attribute
+ */
+//--------------------------------------------------------
+bool LiberaBrillianceGdx::is_FOFBDimBpms_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for FOFBDimBpms attribute in Write access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_WRITE
+
+	//	Not any excluded states for FOFBDimBpms attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimBpmsStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::is_FOFBDimEigenmodes_allowed()
+ *	Description : Execution allowed for FOFBDimEigenmodes attribute
+ */
+//--------------------------------------------------------
+bool LiberaBrillianceGdx::is_FOFBDimEigenmodes_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for FOFBDimEigenmodes attribute in Write access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimEigenmodesStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimEigenmodesStateAllowed_WRITE
+
+	//	Not any excluded states for FOFBDimEigenmodes attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::FOFBDimEigenmodesStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::FOFBDimEigenmodesStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::is_GbeOrbitStatus_allowed()
+ *	Description : Execution allowed for GbeOrbitStatus attribute
+ */
+//--------------------------------------------------------
+bool LiberaBrillianceGdx::is_GbeOrbitStatus_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+
+	//	Not any excluded states for GbeOrbitStatus attribute in read access.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::GbeOrbitStatusStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::GbeOrbitStatusStateAllowed_READ
+	return true;
+}
+
 
 //=================================================
 //		Commands Allowed Methods
@@ -259,5 +300,27 @@ bool LiberaBrillianceGdx::is_SetTraceLevel_allowed(TANGO_UNUSED(const CORBA::Any
 	}
 	return true;
 }
+
+//--------------------------------------------------------
+/**
+ *	Method      : LiberaBrillianceGdx::is_ResetStatusInterlock_allowed()
+ *	Description : Execution allowed for ResetStatusInterlock attribute
+ */
+//--------------------------------------------------------
+bool LiberaBrillianceGdx::is_ResetStatusInterlock_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for ResetStatusInterlock command.
+	/*----- PROTECTED REGION ID(LiberaBrillianceGdx::ResetStatusInterlockStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::ResetStatusInterlockStateAllowed
+	return true;
+}
+
+
+/*----- PROTECTED REGION ID(LiberaBrillianceGdx::LiberaBrillianceGdxStateAllowed.AdditionalMethods) ENABLED START -----*/
+
+//	Additional Methods
+
+/*----- PROTECTED REGION END -----*/	//	LiberaBrillianceGdx::LiberaBrillianceGdxStateAllowed.AdditionalMethods
 
 }	//	End of namespace

@@ -10,10 +10,9 @@ Build-Depends: debhelper (>= 7.0.0),
                libtango8-dev,
                libera-base2.9-dev,
                libera-mci2.9-dev,
-               libliberatango
-
+               libliberatango-dev (>= 2.1.0)
+ 
 Package: tangods-liberabrilliancegdx
 Architecture: i386
-Depends: libtango8, libera-base2.9, libera-mci2.9
+Depends: libtango8, libera-base2.9, libera-mci2.9, libliberatango
 Description: Tango Device Server for Libera Brilliance Gdx Module
-
