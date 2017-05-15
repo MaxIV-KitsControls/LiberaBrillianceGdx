@@ -1,1 +1,1 @@
-# LiberaEventReceiver
+# LiberaBrillianceGdx Device
