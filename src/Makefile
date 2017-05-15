@@ -21,16 +21,16 @@
 #=============================================================================
 # MAKE_ENV is the path to find common environment to buil project
 #
-MAKE_ENV = /usr/share/pogo/preferences
+MAKE_ENV = $(TANGO_HOME)/share/pogo/preferences
 
 #=============================================================================
 # PACKAGE_NAME is the name of the library/device/exe you want to build
 #
 PACKAGE_NAME = LiberaBrillianceGdx
-MAJOR_VERS   = 1
+MAJOR_VERS   = 3
 MINOR_VERS   = 0
 RELEASE      = Release_$(MAJOR_VERS)_$(MINOR_VERS)
-LIBERA_VERSION = 2.9
+LIBERA_VERSION = 3.2
 
 # #=============================================================================
 # # RELEASE_TYPE
